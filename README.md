@@ -1,4 +1,5 @@
 SSN - The Social Security Project 
+
 The purpose of this project is to build an application that issues and manages social security numbers to the people of Ethiopia. 
 It is a springboot Restful webservice project written maninly in java 8. 
 The application will have a UI built in React and an oracle database at the back, both of which are not part of this specific project for now. 
