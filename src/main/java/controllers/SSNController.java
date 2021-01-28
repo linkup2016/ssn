@@ -1,5 +1,6 @@
 package controllers;
 
+import java.text.ParseException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +30,7 @@ public class SSNController {
 	}
 	
 	@PostMapping(path = "/apply", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Confirmation> acceptApplication(SSNApplication app) throws InvalidInputException {
+	public ResponseEntity<Confirmation> acceptApplication(SSNApplication app) throws InvalidInputException, ParseException {
 		SSNUtility.validateApplication(app);
 		Confirmation confirmation = service.registerApplicant(app);
 		return ResponseEntity.ok().body(confirmation);
