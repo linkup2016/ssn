@@ -1,3 +1,8 @@
+/*
+ * The birthDateChecker() - https://www.baeldung.com/java-string-to-date
+ * The validateSSN() - https://www.baeldung.com/java-check-string-number
+ */
+
 package utilities;
 
 import java.text.ParseException;
@@ -35,8 +40,17 @@ public class SSNUtility {
 		}
 	}
 
-	public static boolean validateSSN(String ssn) {
-		return false;
+	public static void validateSSN(String ssn) throws InvalidInputException {
+		if (ssn == null) {
+			throw new InvalidInputException("No SSN id has been entered.");
+	    }if (ssn.length() != 9) {
+	    	throw new InvalidInputException("Incorrect SSN id has been entered.");
+	    }
+	    try {
+	        Integer.parseInt(ssn);
+	    } catch (NumberFormatException nfe) {
+	    	throw new InvalidInputException("SSN id contains disallowed characters.");
+	    }
 	}
 
 	public static boolean validateARecord(Record toUpdate) {
@@ -53,9 +67,9 @@ public class SSNUtility {
 	}
 	
 	public static boolean birthDateChecker(String birthDate) throws ParseException {
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
-		String today = sdf.format(java.time.LocalDateTime.now()); 
-    
-        return sdf.parse(birthDate).before(sdf.parse(today));		
+
+		LocalDate bDate = LocalDate.parse(birthDate); // convert birthDate into a LocalDate type.
+		LocalDate today = LocalDate.now();     
+        return today.isAfter(bDate);		
 	}
 }

@@ -37,7 +37,7 @@ public class SSNController {
 	}
 	
 	@GetMapping(path = "/access", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Record> accessARecord(String id) {
+	public ResponseEntity<Record> accessARecord(String id) throws InvalidInputException {
 		SSNUtility.validateSSN(id);
 		Record record = service.fetchARecord(id);
 		return ResponseEntity.ok().body(record);
@@ -64,7 +64,7 @@ public class SSNController {
 	}
 	
 	@DeleteMapping(path = "/remove", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Confirmation> removeARecord(String id) {
+	public ResponseEntity<Confirmation> removeARecord(String id) throws InvalidInputException {
 		SSNUtility.validateSSN(id);
 		Confirmation confirmation = service.removeARecord(id);
 		return ResponseEntity.ok().body(confirmation);

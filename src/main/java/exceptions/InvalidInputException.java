@@ -6,6 +6,15 @@ public class InvalidInputException extends Exception {
 	private String errorMessage;
 	
 	public InvalidInputException(String errorMessage) {
+		super(errorMessage);
+		this.setErrorMessage(errorMessage);
+	}
+
+	public String getErrorMessage() {
+		return errorMessage;
+	}
+
+	public void setErrorMessage(String errorMessage) {
 		this.errorMessage = errorMessage;
 	}
 	
