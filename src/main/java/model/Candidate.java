@@ -11,4 +11,5 @@ public class Candidate {
 	protected String firstName;
 	protected String middleName;
 	protected String lastName;
+	protected String birthDate;
 }

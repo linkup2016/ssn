@@ -71,7 +71,7 @@ public class SSNController {
 	}
 	
 	@PutMapping(path = "/update", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Confirmation> updateARecord(Record toUpdate) {
+	public ResponseEntity<Confirmation> updateARecord(Record toUpdate) throws InvalidInputException, ParseException {
 		SSNUtility.validateARecord(toUpdate);
 		Confirmation confirmation = service.updateARecord(toUpdate);
 		return ResponseEntity.ok().body(confirmation);

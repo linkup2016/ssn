@@ -3,10 +3,12 @@
  * Junit 5 is written to support java 8 and above. 
  * Use @Disabled instead of @ignore to skip a test case.
  * Learn more at "https://www.baeldung.com/junit-5"
+ * testNameChecker() demonstrates group assertions. Refer the same link above for more. 
  */
 
 package org.ssb.ssn;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -15,17 +17,29 @@ import java.text.ParseException;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.Bean;
 
 import exceptions.InvalidInputException;
+import model.Candidate;
+import model.Record;
 import model.SSNApplication;
+import services.SSNServices;
 import utilities.SSNUtility;
 
 @SpringBootTest
 public class SSNUtilityTest {
-
-	SSNApplication app = new SSNApplication();
-
+	@MockBean
+    private SSNServices service;
+	
+	Candidate app = new SSNApplication();
+	
 	@Test
 	void testValidateApplication_HappyPath() throws InvalidInputException, ParseException {
 		app.setFirstName("firstName");
@@ -53,7 +67,7 @@ public class SSNUtilityTest {
 
 		assertTrue(actualMessage.contains(expectedMessage));
 	}
-	
+
 	@Test()
 	void testValidateApplication_InvalidBirthDate() throws InvalidInputException {
 		app.setFirstName("firstName");
@@ -70,18 +84,17 @@ public class SSNUtilityTest {
 
 		assertTrue(actualMessage.contains(expectedMessage));
 	}
-	
+
 	@Test
 	void testValidateSSN_HappyPath() throws InvalidInputException {
 		String id = "123456789";
 		SSNUtility.validateSSN(id);
 	}
-	
+
 	@Test
 	void testValidateSSN_InvalidSSNid() throws InvalidInputException {
 		String id = "123re@678";
-		
-		
+
 		Exception exception = assertThrows(InvalidInputException.class, () -> {
 			SSNUtility.validateSSN(id);
 		});
@@ -93,14 +106,108 @@ public class SSNUtilityTest {
 	}
 	
 	@Test
+	void testValidateSSN_NullSSNid() throws InvalidInputException {
+
+		Exception exception = assertThrows(InvalidInputException.class, () -> {
+			SSNUtility.validateSSN(null);
+		});
+
+		String expectedMessage = "No SSN id has been entered.";
+		String actualMessage = exception.getMessage();
+
+		assertTrue(actualMessage.contains(expectedMessage));
+	}
+	
+	@Test
+	void testValidateSSN_emptySSNid() throws InvalidInputException {
+
+		Exception exception = assertThrows(InvalidInputException.class, () -> {
+			SSNUtility.validateSSN("");
+		});
+
+		String expectedMessage = "No SSN id has been entered.";
+		String actualMessage = exception.getMessage();
+
+		assertTrue(actualMessage.contains(expectedMessage));
+	}
+	@Test
 	void testValidateSSN_IncorrectNumberOfDigits() throws InvalidInputException {
 		String id = "0123456789";
-		
+
 		Exception exception = assertThrows(InvalidInputException.class, () -> {
 			SSNUtility.validateSSN(id);
 		});
 
 		String expectedMessage = "Incorrect SSN id has been entered.";
+		String actualMessage = exception.getMessage();
+
+		assertTrue(actualMessage.contains(expectedMessage));
+	}
+
+	@Test
+	void testNameChecker() {
+		String[] names = { "Solomon", "ABADI", "m", "daNieL" };
+		assertAll("names", () -> assertTrue(SSNUtility.nameChecker(names[0])),
+				() -> assertTrue(SSNUtility.nameChecker(names[1])), 
+				() -> assertTrue(SSNUtility.nameChecker(names[2])),
+				() -> assertTrue(SSNUtility.nameChecker(names[3])));
+	}
+	
+	@Test()
+	void testValidateARecord_HappyPath() throws InvalidInputException, ParseException {
+		Record rec = new Record();
+		rec.setSsn("234254520");
+		rec.setFirstName("firstName");
+		rec.setMiddleName("middleName");
+		rec.setLastName("lastName");
+		rec.setBirthDate("2001-05-01");
+		
+		// Faced unfinished stubbing error because of syntax error. 
+		// I used when(service.fetchARecord(rec.getSsn())); instead of 
+		// when(service).fetchARecord(rec.getSsn());
+		
+		Mockito.doReturn(new Record()).when(service).fetchARecord(rec.getSsn());
+		
+		SSNUtility.validateARecord(rec);
+	}
+	
+	@Test()
+	void testValidateARecord_BadSSN() throws InvalidInputException {
+		
+		Record rec = new Record();
+		rec.setSsn("2342545hjko");
+		rec.setFirstName("firstName");
+		rec.setMiddleName("middleName");
+		rec.setLastName("lastName");
+		rec.setBirthDate("2001-05-01");
+
+		Mockito.doReturn(new Record()).when(service).fetchARecord(rec.getSsn());
+		Exception exception = assertThrows(InvalidInputException.class, () -> {
+			SSNUtility.validateARecord(rec);
+		});
+
+		String expectedMessage = "Incorrect SSN id has been entered.";
+		String actualMessage = exception.getMessage();
+
+		assertTrue(actualMessage.contains(expectedMessage));
+	}
+	
+	@Test()
+	void testValidateARecord_NullSSN() throws InvalidInputException {
+		
+		Record rec = new Record();
+		rec.setSsn(null);
+		rec.setFirstName("firstName");
+		rec.setMiddleName("middleName");
+		rec.setLastName("lastName");
+		rec.setBirthDate("2001-05-01");
+
+		Mockito.doReturn(new Record()).when(service).fetchARecord(rec.getSsn());
+		Exception exception = assertThrows(InvalidInputException.class, () -> {
+			SSNUtility.validateARecord(rec);
+		});
+
+		String expectedMessage = "No SSN id has been entered.";
 		String actualMessage = exception.getMessage();
 
 		assertTrue(actualMessage.contains(expectedMessage));
