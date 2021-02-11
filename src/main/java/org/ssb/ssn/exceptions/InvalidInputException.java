@@ -1,4 +1,4 @@
-package exceptions;
+package org.ssb.ssn.exceptions;
 
 public class InvalidInputException extends Exception {
 	

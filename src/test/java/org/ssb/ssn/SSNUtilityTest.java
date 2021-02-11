@@ -25,13 +25,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
-
-import exceptions.InvalidInputException;
-import model.Candidate;
-import model.Record;
-import model.SSNApplication;
-import services.SSNServices;
-import utilities.SSNUtility;
+import org.ssb.ssn.exceptions.InvalidInputException;
+import org.ssb.ssn.exceptions.RecordNotFoundException;
+import org.ssb.ssn.models.Candidate;
+import org.ssb.ssn.models.Record;
+import org.ssb.ssn.models.SSNApplication;
+import org.ssb.ssn.services.SSNServices;
+import org.ssb.ssn.utilities.SSNUtility;
 
 @SpringBootTest
 public class SSNUtilityTest {
@@ -153,8 +153,13 @@ public class SSNUtilityTest {
 				() -> assertTrue(SSNUtility.nameChecker(names[3])));
 	}
 	
+	@Test
+	void testBirthDateChecker() throws ParseException {
+		String bDate = "2002-02-02";
+		SSNUtility.birthDateChecker(bDate);
+	}
 	@Test()
-	void testValidateARecord_HappyPath() throws InvalidInputException, ParseException {
+	void testValidateARecord_HappyPath() throws InvalidInputException, ParseException, RecordNotFoundException {
 		Record rec = new Record();
 		rec.setSsn("234254520");
 		rec.setFirstName("firstName");
@@ -172,7 +177,7 @@ public class SSNUtilityTest {
 	}
 	
 	@Test()
-	void testValidateARecord_BadSSN() throws InvalidInputException {
+	void testValidateARecord_BadSSN() throws InvalidInputException, RecordNotFoundException {
 		
 		Record rec = new Record();
 		rec.setSsn("2342545hjko");
@@ -193,7 +198,7 @@ public class SSNUtilityTest {
 	}
 	
 	@Test()
-	void testValidateARecord_NullSSN() throws InvalidInputException {
+	void testValidateARecord_NullSSN() throws InvalidInputException, RecordNotFoundException {
 		
 		Record rec = new Record();
 		rec.setSsn(null);

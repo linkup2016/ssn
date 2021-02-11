@@ -1,17 +1,22 @@
 /*
  * The birthDateChecker() - https://www.baeldung.com/java-string-to-date
+ * Date formatter : https://mkyong.com/java8/java-8-how-to-convert-string-to-localdate/
  * The validateSSN() - https://www.baeldung.com/java-check-string-number
  */
 
-package utilities;
+package org.ssb.ssn.utilities;
 
 import java.text.ParseException;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
-import exceptions.InvalidInputException;
-import model.Candidate;
-import model.Record;
-import services.SSNServices;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.ssb.ssn.data.DataSource;
+import org.ssb.ssn.exceptions.InvalidInputException;
+import org.ssb.ssn.exceptions.RecordNotFoundException;
+import org.ssb.ssn.models.Candidate;
+import org.ssb.ssn.models.Record;
+import org.ssb.ssn.services.SSNServices;
 
 public class SSNUtility {
 
@@ -19,6 +24,9 @@ public class SSNUtility {
 	private static String lastName;
 	private static String middleName;
 	private static String birthDate;
+	
+	@Autowired
+	private static DataSource data;
 	
 	public static void validateApplication(Candidate app) throws InvalidInputException, ParseException {
 		firstName = app.getFirstName();
@@ -51,10 +59,10 @@ public class SSNUtility {
 		}
 	}
 
-	public static boolean validateARecord(Record toUpdate) throws InvalidInputException, ParseException {
+	public static boolean validateARecord(Record toUpdate) throws InvalidInputException, ParseException, RecordNotFoundException {
 		String id = toUpdate.getSsn();
 		validateSSN(id);
-		SSNServices ser = new SSNServices();
+		SSNServices ser = new SSNServices(data);
 		if (ser.fetchARecord(id) != null) {
 			validateApplication(toUpdate);
 		}
@@ -75,7 +83,8 @@ public class SSNUtility {
 	public static boolean birthDateChecker(String birthDate) throws ParseException {
 
 		LocalDate bDate = LocalDate.parse(birthDate); // convert birthDate into a LocalDate type.
-		LocalDate today = LocalDate.now();
+		LocalDate today = LocalDate.now();		
+		
 		return today.isAfter(bDate);
 	}
 }
