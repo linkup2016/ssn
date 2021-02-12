@@ -36,7 +36,7 @@ public class SSNController {
 		return "Welcome to our site";
 	}
 
-	@PostMapping(path = "/apply", produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(path = "/apply", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Confirmation> acceptApplication(@RequestBody SSNApplication app)
 			throws InvalidInputException, ParseException {
 		SSNUtility.validateApplication(app);
