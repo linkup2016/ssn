@@ -8,23 +8,10 @@
 
 package org.ssb.ssn;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.text.ParseException;
-
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Bean;
 import org.ssb.ssn.exceptions.InvalidInputException;
 import org.ssb.ssn.exceptions.RecordNotFoundException;
 import org.ssb.ssn.models.Candidate;
@@ -32,6 +19,10 @@ import org.ssb.ssn.models.Record;
 import org.ssb.ssn.models.SSNApplication;
 import org.ssb.ssn.services.SSNServices;
 import org.ssb.ssn.utilities.SSNUtility;
+
+import java.text.ParseException;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 public class SSNUtilityTest {

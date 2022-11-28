@@ -3,6 +3,7 @@ package org.ssb.ssn.controllers;
 import java.text.ParseException;
 import java.util.List;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -22,8 +23,10 @@ import org.ssb.ssn.services.SSNServices;
 import org.ssb.ssn.utilities.SSNUtility;
 
 @RestController
+@Slf4j
 public class SSNController {
 
+//	static Logger log = Logger.getLogger(SSNController.class.getName());
 	private SSNServices service;
 
 	@Autowired
@@ -33,14 +36,19 @@ public class SSNController {
 
 	@GetMapping({"/","/ssn"})
 	public String welcomeCustomer() throws InvalidInputException {
+		log.info("Get request received");
 		return "Welcome to our site";
 	}
 
 	@PostMapping(path = "/apply", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Confirmation> acceptApplication(@RequestBody SSNApplication app)
 			throws InvalidInputException, ParseException {
+		log.info("Application validation in progress...");
+		log.debug("Appliation details: {}", app);
 		SSNUtility.validateApplication(app);
+		log.info("Application validated successfully.");
 		Confirmation confirmation = service.registerApplicant(app);
+		log.info("Applicant successfully registered");
 		return ResponseEntity.ok().body(confirmation);
 	}
 

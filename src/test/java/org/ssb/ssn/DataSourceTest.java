@@ -1,10 +1,11 @@
 package org.ssb.ssn;
 
-import static org.junit.Assert.assertEquals;
 import org.junit.jupiter.api.Test;
 import org.ssb.ssn.data.DataSource;
 import org.ssb.ssn.exceptions.RecordNotFoundException;
 import org.ssb.ssn.models.Record;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class DataSourceTest {
 
